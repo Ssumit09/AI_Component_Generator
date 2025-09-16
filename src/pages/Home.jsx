@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import Navbar from '../components/Navbar'
+import Navbar from '../Components/Navbar'
 import Select from 'react-select';
 import { BsStars } from 'react-icons/bs';
 import { HiOutlineCode } from 'react-icons/hi';
@@ -14,7 +14,6 @@ import { toast } from 'react-toastify';
 
 const Home = () => {
 
-  // ✅ Fixed typos in options
   const options = [
     { value: 'html-css', label: 'HTML + CSS' },
     { value: 'html-tailwind', label: 'HTML + Tailwind CSS' },
@@ -38,7 +37,46 @@ const Home = () => {
     return match ? match[1].trim() : response.trim();
   }
 
-  
+  // ⚠️ API Key (you said you want it inside the file)
+  const ai = new GoogleGenAI({
+    apiKey: "AIzaSyCEXobZtsh_srnLIAxApJGzZxepw2sESBM"
+  });
+
+  // ✅ Generate code
+  async function getResponse() {
+    if (!prompt.trim()) return toast.error("Please describe your component first");
+
+    try {
+      setLoading(true);
+      const response = await ai.models.generateContent({
+        model: "gemini-2.5-flash",
+        contents: `
+     You are an experienced programmer with expertise in web development and UI/UX design. You create modern, animated, and fully responsive UI components. You are highly skilled in HTML, CSS, Tailwind CSS, Bootstrap, JavaScript, React, Next.js, Vue.js, Angular, and more.
+
+Now, generate a UI component for: ${prompt}  
+Framework to use: ${frameWork.value}  
+
+Requirements:  
+- The code must be clean, well-structured, and easy to understand.  
+- Optimize for SEO where applicable.  
+- Focus on creating a modern, animated, and responsive UI design.  
+- Include high-quality hover effects, shadows, animations, colors, and typography.  
+- Return ONLY the code, formatted properly in **Markdown fenced code blocks**.  
+- Do NOT include explanations, text, comments, or anything else besides the code.  
+- And give the whole code in a single HTML file.
+      `,
+      });
+
+      setCode(extractCode(response.text));
+      setOutputScreen(true);
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong while generating code");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // ✅ Copy Code
   const copyCode = async () => {
     if (!code.trim()) return toast.error("No code to copy");
