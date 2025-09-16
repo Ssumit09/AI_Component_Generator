@@ -1,6 +1,6 @@
-# React Vite Tailwind Project
+# AI COMPONENT GENERATOR
 
-![Homepage](public/HomePage.png)
+![Homepage](public/Homepage.png)
 
 ## 🚀 Overview
 
